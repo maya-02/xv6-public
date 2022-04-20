@@ -1,0 +1,391 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+Address of section .text set to 0x7c00
+LOAD bootasm.o
+LOAD bootmain.o
+                [!provide]                        PROVIDE (__executable_start = SEGMENT_START ("text-segment", 0x8048000))
+                0x0000000008048054                . = (SEGMENT_START ("text-segment", 0x8048000) + SIZEOF_HEADERS)
+
+.interp
+ *(.interp)
+
+.note.gnu.build-id
+ *(.note.gnu.build-id)
+
+.hash
+ *(.hash)
+
+.gnu.hash
+ *(.gnu.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rel.text
+ *(.rel.text .rel.text.* .rel.gnu.linkonce.t.*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rel.rodata
+ *(.rel.rodata .rel.rodata.* .rel.gnu.linkonce.r.*)
+
+.rel.data.rel.ro
+ *(.rel.data.rel.ro .rel.data.rel.ro.* .rel.gnu.linkonce.d.rel.ro.*)
+
+.rel.data
+ *(.rel.data .rel.data.* .rel.gnu.linkonce.d.*)
+
+.rel.tdata
+ *(.rel.tdata .rel.tdata.* .rel.gnu.linkonce.td.*)
+
+.rel.tbss
+ *(.rel.tbss .rel.tbss.* .rel.gnu.linkonce.tb.*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rel.got        0x0000000008048054        0x0
+ *(.rel.got)
+ .rel.got       0x0000000008048054        0x0 bootasm.o
+
+.rel.bss
+ *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*)
+
+.rel.ifunc
+ *(.rel.ifunc)
+
+.rel.plt        0x0000000008048054        0x0
+ *(.rel.plt)
+                [!provide]                        PROVIDE (__rel_iplt_start = .)
+ *(.rel.iplt)
+ .rel.iplt      0x0000000008048054        0x0 bootasm.o
+                [!provide]                        PROVIDE (__rel_iplt_end = .)
+
+.relr.dyn
+ *(.relr.dyn)
+
+.init
+ *(SORT_NONE(.init))
+
+.plt            0x0000000008048054        0x0
+ *(.plt)
+ *(.iplt)
+ .iplt          0x0000000008048054        0x0 bootasm.o
+
+.plt.got
+ *(.plt.got)
+
+.plt.sec
+ *(.plt.sec)
+
+.text           0x0000000000007c00      0x1c3
+ *(.text.unlikely .text.*_unlikely .text.unlikely.*)
+ *(.text.exit .text.exit.*)
+ *(.text.startup .text.startup.*)
+ *(.text.hot .text.hot.*)
+ *(SORT_BY_NAME(.text.sorted.*))
+ *(.text .stub .text.* .gnu.linkonce.t.*)
+ .text          0x0000000000007c00       0x7e bootasm.o
+                0x0000000000007c00                start
+ .text          0x0000000000007c7e      0x145 bootmain.o
+                0x0000000000007c7e                waitdisk
+                0x0000000000007c8c                readsect
+                0x0000000000007cf4                readseg
+                0x0000000000007d3d                bootmain
+ *(.gnu.warning)
+
+.fini
+ *(SORT_NONE(.fini))
+                [!provide]                        PROVIDE (__etext = .)
+                [!provide]                        PROVIDE (_etext = .)
+                [!provide]                        PROVIDE (etext = .)
+
+.rodata
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+
+.rodata1
+ *(.rodata1)
+
+.eh_frame_hdr
+ *(.eh_frame_hdr)
+ *(.eh_frame_entry .eh_frame_entry.*)
+
+.eh_frame
+ *(.eh_frame)
+ *(.eh_frame.*)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.gnu_extab
+ *(.gnu_extab*)
+
+.exception_ranges
+ *(.exception_ranges*)
+                0x0000000000007dc3                . = .
+
+.eh_frame
+ *(.eh_frame)
+ *(.eh_frame.*)
+
+.gnu_extab
+ *(.gnu_extab)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.exception_ranges
+ *(.exception_ranges*)
+
+.tdata          0x0000000000007dc3        0x0
+                [!provide]                        PROVIDE (__tdata_start = .)
+ *(.tdata .tdata.* .gnu.linkonce.td.*)
+
+.tbss
+ *(.tbss .tbss.* .gnu.linkonce.tb.*)
+ *(.tcommon)
+
+.preinit_array  0x0000000000007dc3        0x0
+                [!provide]                        PROVIDE (__preinit_array_start = .)
+ *(.preinit_array)
+                [!provide]                        PROVIDE (__preinit_array_end = .)
+
+.init_array     0x0000000000007dc3        0x0
+                [!provide]                        PROVIDE (__init_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
+ *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
+                [!provide]                        PROVIDE (__init_array_end = .)
+
+.fini_array     0x0000000000007dc3        0x0
+                [!provide]                        PROVIDE (__fini_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
+ *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
+                [!provide]                        PROVIDE (__fini_array_end = .)
+
+.ctors
+ *crtbegin.o(.ctors)
+ *crtbegin?.o(.ctors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+ *(SORT_BY_NAME(.ctors.*))
+ *(.ctors)
+
+.dtors
+ *crtbegin.o(.dtors)
+ *crtbegin?.o(.dtors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+ *(SORT_BY_NAME(.dtors.*))
+ *(.dtors)
+
+.jcr
+ *(.jcr)
+
+.data.rel.ro
+ *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
+ *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
+
+.dynamic
+ *(.dynamic)
+
+.got            0x0000000000007dc4        0x0
+ *(.got)
+ .got           0x0000000000007dc4        0x0 bootasm.o
+ *(.igot)
+
+.got.plt        0x0000000000007dc4        0x0
+ *(.got.plt)
+ .got.plt       0x0000000000007dc4        0x0 bootasm.o
+ *(.igot.plt)
+ .igot.plt      0x0000000000007dc4        0x0 bootasm.o
+
+.data           0x0000000000007dc3        0x0
+ *(.data .data.* .gnu.linkonce.d.*)
+ .data          0x0000000000007dc3        0x0 bootasm.o
+ .data          0x0000000000007dc3        0x0 bootmain.o
+
+.data1
+ *(.data1)
+                0x0000000000007dc3                _edata = .
+                [!provide]                        PROVIDE (edata = .)
+                0x0000000000007dc3                . = .
+                0x0000000000007dc3                __bss_start = .
+
+.bss            0x0000000000007dc3        0x0
+ *(.dynbss)
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x0000000000007dc3        0x0 bootasm.o
+ .bss           0x0000000000007dc3        0x0 bootmain.o
+ *(COMMON)
+                0x0000000000007dc3                . = ALIGN ((. != 0x0)?0x4:0x1)
+                0x0000000000007dc4                . = ALIGN (0x4)
+                0x0000000000007dc4                . = SEGMENT_START ("ldata-segment", .)
+                0x0000000000007dc4                . = ALIGN (0x4)
+                0x0000000000007dc4                _end = .
+                [!provide]                        PROVIDE (end = .)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x0000000000000000       0x12
+ *(.comment)
+ .comment       0x0000000000000000       0x12 bootmain.o
+                                         0x13 (size before relaxing)
+
+.gnu.build.attributes
+ *(.gnu.build.attributes .gnu.build.attributes.*)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x0000000000000000       0x40
+ *(.debug_aranges)
+ .debug_aranges
+                0x0000000000000000       0x20 bootasm.o
+ .debug_aranges
+                0x0000000000000020       0x20 bootmain.o
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x0000000000000000      0x585
+ *(.debug_info .gnu.linkonce.wi.*)
+ .debug_info    0x0000000000000000       0x24 bootasm.o
+ .debug_info    0x0000000000000024      0x561 bootmain.o
+
+.debug_abbrev   0x0000000000000000      0x23c
+ *(.debug_abbrev)
+ .debug_abbrev  0x0000000000000000       0x14 bootasm.o
+ .debug_abbrev  0x0000000000000014      0x228 bootmain.o
+
+.debug_line     0x0000000000000000      0x283
+ *(.debug_line .debug_line.* .debug_line_end)
+ .debug_line    0x0000000000000000       0x67 bootasm.o
+ .debug_line    0x0000000000000067      0x21c bootmain.o
+
+.debug_frame    0x0000000000000000       0xa8
+ *(.debug_frame)
+ .debug_frame   0x0000000000000000       0xa8 bootmain.o
+
+.debug_str      0x0000000000000000      0x1db
+ *(.debug_str)
+ .debug_str     0x0000000000000000       0x37 bootasm.o
+ .debug_str     0x0000000000000037      0x1a4 bootmain.o
+                                        0x1b6 (size before relaxing)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges
+ *(.debug_ranges)
+
+.debug_addr
+ *(.debug_addr)
+
+.debug_line_str
+                0x0000000000000000       0x4a
+ *(.debug_line_str)
+ .debug_line_str
+                0x0000000000000000       0x2b bootasm.o
+                                         0x35 (size before relaxing)
+ .debug_line_str
+                0x000000000000002b       0x1f bootmain.o
+                                         0x77 (size before relaxing)
+
+.debug_loclists
+                0x0000000000000000      0x18d
+ *(.debug_loclists)
+ .debug_loclists
+                0x0000000000000000      0x18d bootmain.o
+
+.debug_macro
+ *(.debug_macro)
+
+.debug_names
+ *(.debug_names)
+
+.debug_rnglists
+                0x0000000000000000       0x33
+ *(.debug_rnglists)
+ .debug_rnglists
+                0x0000000000000000       0x33 bootmain.o
+
+.debug_str_offsets
+ *(.debug_str_offsets)
+
+.debug_sup
+ *(.debug_sup)
+
+.gnu.attributes
+ *(.gnu.attributes)
+
+/DISCARD/
+ *(.note.GNU-stack)
+ *(.gnu_debuglink)
+ *(.gnu.lto_*)
+OUTPUT(bootblock.o elf32-i386)

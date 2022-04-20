@@ -392,6 +392,54 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
   return 0;
 }
 
+// should change the protection bits of the page range starting at addr and of len pages to be read only
+int mprotect(void *addr, int len)
+{
+  struct proc *curproc = myproc();
+  pte_t *pte;
+  int i;
+
+// addr is not page aligned, addr points to a region that is not currently a part of the address space, or len is less than or equal to zero
+  if ((uint)addr >= curproc->sz || (uint)addr + len >= curproc->sz){
+    return -1
+  }
+
+
+  for (i = (int)addr; i < ((int) addr + (len) *PGSIZE); i+= PGSIZE){
+    pte = walkpgdir(curproc->pgdir,(void*) i, 0); //Address of PTE in pgdir
+    if(pte && ((*pte & PTE_U) == 0) || ((*pte & PTE_P) == 0) ){
+      return -1;
+    } 
+    else {
+      *pte = (*pte) & (~PTE_W) ;
+    }
+  }
+
+  lcr3(V2P(curproc->pgdir));//updating the CR3 register
+  return 0;//Otherwise, return 0 upon success
+}
+
+//sets the region back to both readable and writeable
+int munprotect(void *addr, int len){
+  struct proc *curproc = myproc();
+  pte_t *pte;
+  int i;
+  
+  if ((uint)addr >= curproc->sz || (uint)addr + len >= curproc->sz){
+    return -1
+  }
+
+ for (i = (int) addr; i < ((int) addr + (len) *PGSIZE); i+= PGSIZE){
+    pte = walkpgdir(curproc->pgdir,(void*) i, 0);//Address of PTE in pgdir
+    if(pte && ((*pte & PTE_U) == 0) || ((*pte & PTE_P) == 0) ){
+      return -1;
+    } else {
+      *pte = (*pte) | (PTE_W) ; 
+    }
+  }
+  lcr3(V2P(curproc->pgdir));//updating the CR3 register
+  return 0;//Otherwise, return 0 upon success
+}
 //PAGEBREAK!
 // Blank page.
 //PAGEBREAK!
